@@ -13,11 +13,5 @@ bool DatabaseManager::openDatabase(const QString& path) {
 
 void DatabaseManager::initSchema() {
     QSqlQuery query;
-    query.exec("CREATE TABLE IF NOT EXISTS credentials ("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "service TEXT, "
-               "username TEXT, "
-               "password TEXT, "
-               "url TEXT, "
-               "notes TEXT)");
+    query.exec("CREATE TABLE IF NOT EXISTS credentials (id INTEGER PRIMARY KEY, service TEXT, username TEXT, password TEXT, url TEXT, notes TEXT)");
 }

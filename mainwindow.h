@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <QSqlQuery>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QJsonDocument>
 #include <QHeaderView>
 #include "databasemanager.h"
 
@@ -22,16 +24,15 @@ public:
 private slots:
     void on_actionNew_triggered();
     void on_actionDelete_triggered();
-    void on_btnClear_clicked();
+    void on_actionCheckBreach_triggered(); // Новий слот для перевірки мережі
     void on_editSearch_textChanged(const QString &text);
-    void loadData();
-    void syncToDatabase();
+    void onNetworkReply(QNetworkReply* reply);
 
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
+    QNetworkAccessManager *networkManager;
     void setupTable();
 };
-
 #endif
