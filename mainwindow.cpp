@@ -5,7 +5,22 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    // Створюємо модель на 5 колонок згідно з методичкою
+    if (DatabaseManager::instance().openDatabase("vault.db")) {
+        DatabaseManager::instance().initSchema();
+    }
+
+    setupTable();
+    loadData();
+
+    connect(ui->btnClear, &QPushButton::clicked, this, &MainWindow::on_btnClear_clicked);
+}
+
+MainWindow::~MainWindow() {
+    syncToDatabase();
+    delete ui;
+}
+
+void MainWindow::setupTable() {
     model = new QStandardItemModel(0, 5, this);
     model->setHeaderData(0, Qt::Horizontal, "Name");
     model->setHeaderData(1, Qt::Horizontal, "Username");
@@ -14,38 +29,46 @@ MainWindow::MainWindow(QWidget *parent)
     model->setHeaderData(4, Qt::Horizontal, "Notes");
 
     ui->tableView->setModel(model);
-
-    // Налаштовуємо адаптивність колонок
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-    // Початковий статус
-    ui->statusbar->showMessage("Ready | Total: 0 Filtered: 0"); // [cite: 719, 720]
 }
 
-MainWindow::~MainWindow() {
-    delete ui;
+void MainWindow::loadData() {
+    model->removeRows(0, model->rowCount());
+    QSqlQuery query("SELECT service, username, password, url, notes FROM credentials");
+    while (query.next()) {
+        QList<QStandardItem*> items;
+        for(int i=0; i<5; ++i) items << new QStandardItem(query.value(i).toString());
+        model->appendRow(items);
+    }
 }
 
 void MainWindow::on_actionNew_triggered() {
     model->appendRow({
         new QStandardItem("New Service"),
         new QStandardItem("user@mail.com"),
-        new QStandardItem("********"),
-        new QStandardItem("https://..."),
-        new QStandardItem("")
+        new QStandardItem("password"),
+        new QStandardItem("https://"),
+        new QStandardItem("notes...")
     });
-    updateStatus();
 }
 
 void MainWindow::on_actionDelete_triggered() {
     QModelIndex index = ui->tableView->currentIndex();
     if (index.isValid()) {
         model->removeRow(index.row());
-        updateStatus();
     }
 }
 
-void MainWindow::updateStatus() {
-    int total = model->rowCount();
-    ui->statusbar->showMessage(QString("Ready | Total: %1 Filtered: 0").arg(total));
+void MainWindow::on_btnClear_clicked() {
+    ui->editSearch->clear();
+}
+
+void MainWindow::syncToDatabase() {
+    QSqlQuery query;
+    query.exec("DELETE FROM credentials");
+    for (int i = 0; i < model->rowCount(); ++i) {
+        query.prepare("INSERT INTO credentials (service, username, password, url, notes) VALUES (?, ?, ?, ?, ?)");
+        for(int j=0; j<5; j++) query.addBindValue(model->item(i, j)->text());
+        query.exec();
+    }
 }

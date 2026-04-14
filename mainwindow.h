@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QSqlQuery>
+#include <QHeaderView>
+#include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,10 +21,13 @@ public:
 private slots:
     void on_actionNew_triggered();
     void on_actionDelete_triggered();
+    void on_btnClear_clicked();
+    void loadData();
+    void syncToDatabase();
 
 private:
-    void updateStatus();
     Ui::MainWindow *ui;
     QStandardItemModel *model;
+    void setupTable();
 };
 #endif
