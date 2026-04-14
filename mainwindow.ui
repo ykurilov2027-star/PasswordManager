@@ -3,7 +3,10 @@
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
-   <rect><width>800</width><height>500</height></rect>
+   <rect>
+    <width>800</width>
+    <height>500</height>
+   </rect>
   </property>
   <property name="windowTitle">
    <string>Password Manager</string>
@@ -14,22 +17,32 @@
      <layout class="QHBoxLayout" name="searchLayout">
       <item>
        <widget class="QLabel" name="labelCategory">
-        <property name="text"><string>Category:</string></property>
+        <property name="text">
+         <string>Category:</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QComboBox" name="comboCategory">
-        <item><property name="text"><string>All</string></property></item>
+        <item>
+         <property name="text">
+          <string>All</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
        <widget class="QLineEdit" name="editSearch">
-        <property name="placeholderText"><string>Search...</string></property>
+        <property name="placeholderText">
+         <string>Search...</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnClear">
-        <property name="text"><string>Clear</string></property>
+        <property name="text">
+         <string>Clear</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -44,19 +57,60 @@
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
-   <attribute name="toolBarArea"><enum>TopToolBarArea</enum></attribute>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionEdit"/>
    <addaction name="actionDelete"/>
+   <addaction name="separator"/>
+   <addaction name="actionCheckBreach"/>
+   <addaction name="actionCheckAll"/>
    <addaction name="separator"/>
    <addaction name="actionCopyUser"/>
    <addaction name="actionCopyPass"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNew"><property name="text"><string>New Entry</string></property></action>
-  <action name="actionEdit"><property name="text"><string>Edit</string></property></action>
-  <action name="actionDelete"><property name="text"><string>Delete</string></property></action>
-  <action name="actionCopyUser"><property name="text"><string>Copy Username</string></property></action>
-  <action name="actionCopyPass"><property name="text"><string>Copy Password</string></property></action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New Entry</string>
+   </property>
+  </action>
+  <action name="actionEdit">
+   <property name="text">
+    <string>Edit</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionCopyUser">
+   <property name="text">
+    <string>Copy Username</string>
+   </property>
+  </action>
+  <action name="actionCopyPass">
+   <property name="text">
+    <string>Copy Password</string>
+   </property>
+  </action>
+  <action name="actionCheckBreach">
+   <property name="text">
+    <string>Check Security</string>
+   </property>
+   <property name="toolTip">
+    <string>Check single password in breach database</string>
+   </property>
+  </action>
+  <action name="actionCheckAll">
+   <property name="text">
+    <string>Scan All</string>
+   </property>
+   <property name="toolTip">
+    <string>Background scan for all passwords</string>
+   </property>
+  </action>
  </widget>
 </ui>

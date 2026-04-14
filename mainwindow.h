@@ -5,9 +5,8 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QJsonDocument>
-#include <QHeaderView>
+#include <QtConcurrent>
+#include <QFutureWatcher>
 #include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -22,17 +21,19 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_actionCheckAll_triggered();
+    void on_editSearch_textChanged(const QString &text);
     void on_actionNew_triggered();
     void on_actionDelete_triggered();
-    void on_actionCheckBreach_triggered(); // Новий слот для перевірки мережі
-    void on_editSearch_textChanged(const QString &text);
-    void onNetworkReply(QNetworkReply* reply);
+    void on_btnSave_clicked();
+    void onScanFinished();
 
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
-    QNetworkAccessManager *networkManager;
+    QFutureWatcher<void> watcher;
     void setupTable();
+    void loadData();
 };
 #endif
