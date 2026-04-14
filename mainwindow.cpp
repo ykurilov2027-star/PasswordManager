@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupTable();
     loadData();
 
+    connect(ui->editSearch, &QLineEdit::textChanged, this, &MainWindow::on_editSearch_textChanged);
     connect(ui->btnClear, &QPushButton::clicked, this, &MainWindow::on_btnClear_clicked);
 }
 
@@ -28,7 +29,13 @@ void MainWindow::setupTable() {
     model->setHeaderData(3, Qt::Horizontal, "URL");
     model->setHeaderData(4, Qt::Horizontal, "Notes");
 
-    ui->tableView->setModel(model);
+    proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(model);
+    proxyModel->setFilterKeyColumn(-1);
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+
+    ui->tableView->setModel(proxyModel);
+    ui->tableView->setSortingEnabled(true);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
@@ -42,25 +49,30 @@ void MainWindow::loadData() {
     }
 }
 
+void MainWindow::on_editSearch_textChanged(const QString &text) {
+    proxyModel->setFilterFixedString(text);
+}
+
+void MainWindow::on_btnClear_clicked() {
+    ui->editSearch->clear();
+}
+
 void MainWindow::on_actionNew_triggered() {
     model->appendRow({
         new QStandardItem("New Service"),
         new QStandardItem("user@mail.com"),
         new QStandardItem("password"),
         new QStandardItem("https://"),
-        new QStandardItem("notes...")
+        new QStandardItem("")
     });
 }
 
 void MainWindow::on_actionDelete_triggered() {
-    QModelIndex index = ui->tableView->currentIndex();
-    if (index.isValid()) {
-        model->removeRow(index.row());
+    QModelIndex proxyIndex = ui->tableView->currentIndex();
+    if (proxyIndex.isValid()) {
+        QModelIndex sourceIndex = proxyModel->mapToSource(proxyIndex);
+        model->removeRow(sourceIndex.row());
     }
-}
-
-void MainWindow::on_btnClear_clicked() {
-    ui->editSearch->clear();
 }
 
 void MainWindow::syncToDatabase() {
